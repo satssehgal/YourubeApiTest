@@ -11,13 +11,13 @@ from pytube import YouTube
 from youtube_search import YoutubeSearch
 from IPython.display import display
 import warnings
+from docsim  import YTCompare
 warnings.filterwarnings("ignore")
 
 pd.set_option('display.max_columns',None)
 
-
-search_term='how to repair a computer'
-max_results=10
+search_term='learn python programming'
+max_results=30
 
 results = YoutubeSearch(search_term, max_results=max_results).to_json()
 res = json.loads(results)['videos']
@@ -28,7 +28,7 @@ ytdatalist=[]
 for i in range(max_results):
 	yt = YouTube('http://youtube.com/{}'.format(links[i]))
 	ytdata={
-		'Title': yt.title,
+		'title': yt.title,
 		'thurl':yt.thumbnail_url,
 		'length':yt.length,
 		'views':yt.views,
@@ -89,10 +89,10 @@ for f in range(max_results):
     df['faces'].iloc[f]=int(addFaces2(imagePath)[0])
     df['smile'].iloc[f]= 1 if int(addFaces2(imagePath)[1]) >0 else 0
     df['face_eyes'].iloc[f]= int(addFaces2(imagePath)[2]/2)
-    
+
+df['SimScores']=0
+df['SimScores']=[YTCompare(search_term, ytdatalist[i]['title']) for i in range(max_results)]   
 display(df.sort_values(by='views', ascending=False))
 
-display(df.loc[2]['thurl'])
-
-
+#display(df.loc[2]['thurl'])
 
