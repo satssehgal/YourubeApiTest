@@ -9,10 +9,9 @@ import numpy as np
 from matplotlib.pyplot import imshow
 from pytube import YouTube
 from youtube_search import YoutubeSearch
-from IPython.display import display
 import warnings
-from docsim  import YTCompare
 warnings.filterwarnings("ignore")
+from docsim import YTCompare
 
 pd.set_option('display.max_columns',None)
 
@@ -41,23 +40,7 @@ df['faces']=0
 df['face_eyes']=0
 df['smile']=0
 
-
-
 def addFaces(thurl):
-    response = requests.get(imagePath)
-    img_PIL = Image.open(BytesIO(response.content))
-    gray_PIL = Image.open(BytesIO(response.content)).convert('L')
-    img = np.array(img_PIL) 
-    gray = np.array(gray_PIL) 
-    faceCascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
-    faces = faceCascade.detectMultiScale(
-            gray,
-            scaleFactor=1.3,
-            minNeighbors=5,
-    )
-    return len(faces)
-
-def addFaces2(thurl):
     response = requests.get(thurl)
     img_PIL = Image.open(BytesIO(response.content))
     gray_PIL = Image.open(BytesIO(response.content)).convert('L')
@@ -86,13 +69,12 @@ def addFaces2(thurl):
  
 for f in range(max_results):
     imagePath=df.iloc[f]['thurl']
-    df['faces'].iloc[f]=int(addFaces2(imagePath)[0])
-    df['smile'].iloc[f]= 1 if int(addFaces2(imagePath)[1]) >0 else 0
-    df['face_eyes'].iloc[f]= int(addFaces2(imagePath)[2]/2)
+    df['faces'].iloc[f]=int(addFaces(imagePath)[0])
+    df['smile'].iloc[f]= 1 if int(addFaces(imagePath)[1]) >0 else 0
+    df['face_eyes'].iloc[f]= int(addFaces(imagePath)[2]/2)
 
 df['SimScores']=0
 df['SimScores']=[YTCompare(search_term, ytdatalist[i]['title']) for i in range(max_results)]   
-display(df.sort_values(by='views', ascending=False))
+df.sort_values(by='views', ascending=False)
 
-#display(df.loc[2]['thurl'])
 
