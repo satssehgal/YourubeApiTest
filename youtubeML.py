@@ -75,6 +75,6 @@ for f in range(max_results):
 
 df['SimScores']=0
 df['SimScores']=[YTCompare(search_term, ytdatalist[i]['title']) for i in range(max_results)]   
-df.sort_values(by='views', ascending=False)
+df.sort_values(by='views', ascending=False).to_excel('test.xlsx')
 
 
